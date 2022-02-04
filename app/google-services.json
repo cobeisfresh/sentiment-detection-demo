@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "681245040542",
+    "project_id": "sentiment-detection-cobe",
+    "storage_bucket": "sentiment-detection-cobe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681245040542:android:7dc31a438dd20d46bf808f",
+        "android_client_info": {
+          "package_name": "com.cobeisfresh.demo.sentimentdetection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681245040542-mhi9froer8t8s2npto8q6vmbe6jhqf7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAknAJ8UnsrllnOP2I3mLzYC4WfvFVxFXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681245040542-mhi9froer8t8s2npto8q6vmbe6jhqf7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
