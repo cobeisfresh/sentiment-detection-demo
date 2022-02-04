@@ -19,12 +19,12 @@ import java.io.InputStreamReader
 import java.lang.IllegalStateException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var interpreter: Interpreter? = null
-
-    private var dictionary: Map<String, Int>? = null
-    private var labels: List<String>? = null
+    private lateinit var interpreter: Interpreter
+    private lateinit var dictionary: Map<String, Int>
+    private lateinit var labels: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +49,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun classify() {
-        val input = findViewById<EditText>(R.id.et_input).text.toString()
-        val output = ByteBuffer.allocateDirect(1_000).order(ByteOrder.nativeOrder())
-        interpreter?.run(input, output)
-        findViewById<TextView>(R.id.tv_result).text = String(output.array())
+        val input = tokenizeInputText(input = findViewById<EditText>(R.id.et_input).text.toString())
+        val output = Array(size = 1) { Array(labels.size) { 0f } }
+        interpreter.run(input, output)
+        val temp = 0
     }
 
     private fun downloadModel(
@@ -104,6 +104,23 @@ class MainActivity : AppCompatActivity() {
         dictionary = result
     }
 
+    private fun tokenizeInputText(input: String): Array<Array<Int?>> {
+        val temp = arrayOfNulls<Int>(size = MAX_SENTENCE_LEN)
+        val words = input.split(SIMPLE_SPACE_OR_PUNCTUATION_REGEX)
+        var index = 0
+        if (dictionary.containsKey(START)) {
+            temp[index++] = dictionary[START]
+        }
+        words.forEach { word ->
+            if (index >= MAX_SENTENCE_LEN) {
+                return@forEach
+            }
+            temp[index++] = if (dictionary.containsKey(word)) dictionary[word] else dictionary[UNKNOWN]
+        }
+        Arrays.fill(temp, index, MAX_SENTENCE_LEN - 1, dictionary[PAD])
+        return arrayOf(temp)
+    }
+
     private fun initializeSubmitButton() {
         findViewById<Button>(R.id.btn_submit).setOnClickListener {
             classify()
@@ -112,5 +129,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableUi() {
         findViewById<Button>(R.id.btn_submit).isEnabled = true
+    }
+
+    companion object {
+        private const val MAX_SENTENCE_LEN = 256
+        private const val SIMPLE_SPACE_OR_PUNCTUATION_REGEX = " |\\,|\\.|\\!|\\?|\n"
+        private const val START = "<START>"
+        private const val PAD = "<PAD>"
+        private const val UNKNOWN = "<UNKNOWN>"
     }
 }
