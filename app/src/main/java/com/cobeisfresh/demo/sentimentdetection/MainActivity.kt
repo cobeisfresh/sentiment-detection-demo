@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun tokenizeInputText(input: String): Array<IntArray> {
         val temp = IntArray(size = MAX_SENTENCE_LEN) { dictionary[PAD]!! }
-        val words = input.split(SIMPLE_SPACE_OR_PUNCTUATION_REGEX)
+        val words = input.split(Regex(SIMPLE_SPACE_OR_PUNCTUATION_PATTERN))
         var index = 0
         if (dictionary.containsKey(START)) {
             temp[index++] = dictionary[START]!!
@@ -118,10 +118,14 @@ class MainActivity : AppCompatActivity() {
             if (index >= MAX_SENTENCE_LEN) {
                 return@forEach
             }
-            temp[index++] = if (dictionary.containsKey(word)) dictionary[word]!! else dictionary[UNKNOWN]!!
+            temp[index++] = if (dictionary.containsKey(word)) {
+                dictionary[word]!!
+            } else {
+                dictionary[UNKNOWN]!!
+            }
         }
         Arrays.fill(temp, index, MAX_SENTENCE_LEN - 1, dictionary[PAD]!!)
-        return Array(size = 1) { temp }
+        return arrayOf(temp)
     }
 
     private fun initializeSubmitButton() {
@@ -136,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val MAX_SENTENCE_LEN = 256
-        private const val SIMPLE_SPACE_OR_PUNCTUATION_REGEX = " |\\,|\\.|\\!|\\?|\n"
+        private const val SIMPLE_SPACE_OR_PUNCTUATION_PATTERN = "[ ,.!?\n]"
         private const val START = "<START>"
         private const val PAD = "<PAD>"
         private const val UNKNOWN = "<UNKNOWN>"
