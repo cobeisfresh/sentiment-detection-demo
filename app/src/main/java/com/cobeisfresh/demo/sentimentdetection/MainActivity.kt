@@ -20,7 +20,9 @@ import java.lang.IllegalStateException
 import java.nio.ByteBuffer
 import java.util.*
 
-
+/**
+ * TFLite model info gotten from https://github.com/tensorflow/examples/tree/master/lite/examples/text_classification/android
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var interpreter: Interpreter
     private lateinit var dictionary: Map<String, Int>
@@ -88,7 +90,6 @@ class MainActivity : AppCompatActivity() {
         loadLabels(metadataExtractor.getAssociatedFile("labels.txt"))
     }
 
-    // refer to https://github.com/tensorflow/examples/tree/master/lite/examples/text_classification/android
     private fun loadLabels(inputStream: InputStream) {
         val result = mutableListOf<String>()
         val reader = BufferedReader(InputStreamReader(inputStream))
@@ -98,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         labels = result
     }
 
-    // refer to https://github.com/tensorflow/examples/tree/master/lite/examples/text_classification/android
     private fun loadDictionary(inputStream: InputStream) {
         val result = mutableMapOf<String, Int>()
         val reader = BufferedReader(InputStreamReader(inputStream))
