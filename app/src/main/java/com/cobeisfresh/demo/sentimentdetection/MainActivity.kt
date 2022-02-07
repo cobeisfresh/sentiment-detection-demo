@@ -2,16 +2,15 @@ package com.cobeisfresh.demo.sentimentdetection
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ml.modeldownloader.CustomModel
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.schema.BuiltinOperator
 import org.tensorflow.lite.support.metadata.MetadataExtractor
 import java.io.BufferedReader
 import java.io.File
@@ -53,9 +52,12 @@ class MainActivity : AppCompatActivity() {
         val input = tokenizeInputText(input = findViewById<EditText>(R.id.et_input).text.toString())
         val output = Array(size = 1) { FloatArray(labels.size) { 0f } }
         interpreter.run(input, output)
-        for (i in labels.indices) {
-            Log.d("MainActivity", "${labels[i]}: ${output[0][i]}")
-        }
+
+        val firstLabelActivation = output[0][0]
+        val secondLabelActivation = output[0][1]
+        val moreConfidentLabel = labels[if (firstLabelActivation > secondLabelActivation) 0 else 1]
+        val prediction = "Hmmm... I believe this review is $moreConfidentLabel."
+        findViewById<TextView>(R.id.tv_result).text = prediction
     }
 
     private fun downloadModel(
